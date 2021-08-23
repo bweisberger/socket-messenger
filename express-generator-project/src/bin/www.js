@@ -8,6 +8,7 @@ import app from '../app';
 import debug from 'debug';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import MessageService from '../services/MessageService';
 
 /**
  * Get port from environment and store in Express.
@@ -33,12 +34,25 @@ const io = new Server(httpServer, {
  */
  io.on('connection', socket => {
   console.log('user connected');
-  socket.on('chatMessage2', (message) => {
-    console.log('received chatMessage2');
-    io.emit('chatMessage1', message);
+  let messagePollingInterval
+  socket.on('user logged in', (userName) => {
+    if (userName) {
+      clearInterval(messagePollingInterval);
+      console.log(`${userName} logged in. Starting polling`);
+      messagePollingInterval = setInterval(async () => {
+        const newMessages = MessageService.getNewMessagesForUser(userName);
+        if (newMessages.length) {
+          io.emit('foundNewMessages', newMessages);
+        }
+        io.emit('polling', userName);
+      }, 1000);
+    }
   });
   socket.on('disconnect', () => {
     console.log('user disconnected');
+    console.log('stopping polling');
+    clearInterval(messagePollingInterval);
+    messagePollingInterval = null;
   })
 })
 /**
