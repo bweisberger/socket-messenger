@@ -1,22 +1,41 @@
-import { pool } from '../databaseUtils/pool'
+import Message from '../domain/Message';
 import MessageRecord from '../record DTOS/MessageRecord';
-import MessageMetadataRecord from '../record DTOS/MessageMetadataRecord';
+import MessageAccess from '../access/MessageAccess';
 
 const MessageService = {
-  submit(message) {
-    const savedMessageId = this.saveMessage(message);
-    this.saveMetadataWithId(message, savedMessageId);
-  },
-  
-  saveMessage(message) {
-    const record = MessageRecord.from(message);
-    return MessageAccess.insertMessage(record);
+  messagePollingInterval: null,
+  submit(messageJson) {
+    const newMessage = new Message(messageJson);
+    this.saveMessage(newMessage);
   },
 
-  saveMetadataWithId(message, savedMessageId) {
-    const record = MessageMetadataRecord.fromNewMessage(message);
-    record.messageId = savedMessageId;
-    MessageMetadataAccess.insertMetadata(record);
+  saveMessage(newMessage) {
+    const record = MessageRecord.fromNewMessage(newMessage);
+    MessageAccess.insertMessage(record);
+  },
+
+  getUserMessages(toUser, fromUser) {
+    const result = MessageAccess.getMessagesForUsers(toUser, fromUser);
+    console.log(result, "<----result in getUserMessages");
+    return result.rows.map(row => {
+      MessageRecord.fromDatabase(row);
+    })
+  },
+
+  getNewMessagesForUser: async (toUser) => {
+    let newMessages = [];
+    const result = await MessageAccess.getNewMessagesForUser(toUser);
+      if (result.rows.length){
+        newMessages = result.rows.map(row => {
+          MessageRecord.fromDatabase(row);
+        })
+      }
+    if (newMessages.length) {
+      newMessages.forEach(message => {
+        MessageAccess.updateMessageWithTimeRead(message, Date.now());
+      })
+    }
+    return newMessages;
   }
     
 }
