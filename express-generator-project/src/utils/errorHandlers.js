@@ -1,11 +1,11 @@
 export const getErrorStatus = (err) => {
-  if (isUnprocessableEntity(err)) {
+  if (isMissingData(err)) {
     return 422;
   } else {
     return 500;
   }
 }
 
-const isUnprocessableEntity = (err) => {
+const isMissingData= (err) => {
   return err.message.includes('Message is missing field ');
 }
