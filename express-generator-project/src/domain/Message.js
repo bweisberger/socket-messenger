@@ -1,39 +1,51 @@
-import { HttpError } from "http-errors";
+import UserService from '../services/UserService';
 
 class Message {
   constructor(messageJson) {
     this.messageJson = messageJson;
-    this.validateFields();
+    this.validateFieldsOrGetError();
     const { message, toUser, fromUser, timeSent } = messageJson
-    this.message = message;
+    this.text = message;
     this.toUser = toUser;
     this.fromUser = fromUser;
-    this.timeSent = timeSent
+    this.timeSent = timeSent;
+    this.timeRead = null;
   };
 
-  validateFields() {
-    this.checkExpectedFieldsExist();
-    this.checkUsersExist();
+  validateFieldsOrGetError() {
+    this.validateExpectedFieldsExist();
+    // this.validateUsersExist().catch(err => {
+    //   this.validationError = err
+    // });
+    if (this.validationError) {
+      return false;
+    }
+    return true;
+
   };
 
-  checkExpectedFieldsExist() {
+  validateExpectedFieldsExist() {
     const expectedFields = ['message', 'toUser', 'fromUser', 'timeSent'];
+    let invalidField;
     expectedFields.forEach(field => {
       if (!this.messageJson[field]) {
-        throw new Error(`Message is missing field: ${field}.`);
+        invalidField = field;
       }
     });
+    if (invalidField) {
+      throw new Error(`Message is missing field: ${invalidField}.`);
+    }
   };
 
-  checkUsersExist() {
-    const users = UserService.getExistingUsers(this.messageJson.toUser, this.messageJson.fromUser);
+  validateUsersExist = async () => {
+    const users = await UserService.getExistingUsers(this.messageJson.toUser, this.messageJson.fromUser);
     if (users.length < 2 && this.messageJson.toUser !== this.messageJson.fromUser) {
-      const missingUserName = this.findUserNameNotInDatabase(users);
-      throw new Error(`User does not exist: ${missingUser}`)
+      const missingUserName = this.getUserNameNotInDatabase(users);
+      return new Error(`User does not exist: ${missingUserName}`)
     }
   };
   
-  findUserNameNotInDatabase = (users) => {
+  getUserNameNotInDatabase = (users) => {
     const { toUser, fromUser } = this.messageJson;
     const userNames = users.map(user => user.name);
     if (!userNames.includes(toUser)) {
