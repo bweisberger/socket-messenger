@@ -1,24 +1,55 @@
-
+import { pool } from '../databaseUtils/pool';
 
 const UserAccess = {
   getExistingUserRecords(toUser, fromUser) {
-    let result;
     const query = {
       text: 'SELECT id, name FROM users WHERE name IN ($1, $2);',
       values: [toUser, fromUser],
     }
-    pool.connect().then(client => {
+    return pool.connect().then(client => {
       return client.query(query).then(res => {
-        console.log(res);
-        result = res;
+        console.log('query result', res);
         client.release();
+        return res;
       }).catch(err => {
         client.release()
         console.log(err.stack)
       })
     })
-    pool.end(); 
-    return result;
+  },
+
+  getExistingUser(name) {
+    const query = {
+      text: 'SELECT id, name FROM users WHERE name IN ($1);',
+      values: [name],
+    }
+    return pool.connect().then(client => {
+      return client.query(query).then(res => {
+        console.log('query result', res);
+        client.release();
+        return res;
+      }).catch(err => {
+        client.release()
+        console.log(err.stack)
+      })
+    })
+  },
+
+  insertNewUser({name}) {
+    const query = {
+      text: `INSERT INTO users (name) VALUES ($1);`,
+      values: [name],
+    }
+    return pool.connect().then(client => {
+      return client.query(query).then(res => {
+        console.log('query result', res);
+        client.release();
+        return res;
+      }).catch(err => {
+        client.release()
+        console.log(err.stack)
+      })
+    })
   }
 }
 
