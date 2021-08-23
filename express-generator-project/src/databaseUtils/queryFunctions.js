@@ -1,12 +1,8 @@
 import { pool } from "./pool"
 import { 
-  CREATE_MESSAGE_METADATA_TABLE_QUERY,
   CREATE_USERS_TABLE_QUERY,
   CREATE_MESSAGES_TABLE_QUERY,
   RANDOM_QUERY,
-  INSERT_MESSAGE_METADATA,
-  UPDATE_MESSAGE_METADATA,
-  INSERT_USER
 } from './queries';
 
 export const createTables = () => {
@@ -14,7 +10,7 @@ export const createTables = () => {
     .connect()
     .then(client => {
       return client
-        .query(CREATE_MESSAGES_TABLE_QUERY + CREATE_USERS_TABLE_QUERY + CREATE_MESSAGE_METADATA_TABLE_QUERY)
+        .query(CREATE_MESSAGES_TABLE_QUERY)
         .then(res => {
           client.release();
           console.log(res)
@@ -24,7 +20,6 @@ export const createTables = () => {
           console.log(err.stack)
         })
     })
-  pool.end();
 }
 
 
@@ -44,5 +39,4 @@ export const randomQuery = () => {
           console.log(err.stack)
         })
     })
-  pool.end();
 }

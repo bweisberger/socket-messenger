@@ -1,4 +1,4 @@
-import { randomQuery } from './queries';
+import { randomQuery } from './queryFunctions';
 import { pool } from './pool';
 
 (() => {
