@@ -2,17 +2,20 @@ import UserAccess from '../access/UserAccess';
 import User from '../domain/User';
 
 const UserService = {
-  getExistingUsers: async (toUser, fromUser) => {
-    const result = await UserAccess.getExistingUserRecords(toUser, fromUser);
-    if (!result.rows) {
-      throw new Error(`No users exist with names: ${toUser}, ${fromUser}`)
+  getAllExistingUserNames: async () => {
+    const result = await UserAccess.getExistingUserRecords();
+    if (!result.rows.length) {
+      throw new Error(`No users exist`)
     }
-    return result.rows.map(row => {
-      return {
-        id: row.id,
-        name: row.name
-      }
-    })
+    return result.rows.map(row => row.name)
+  },
+
+  isExistingUser: async (userName) => {
+    const result = await UserAccess.getExistingUser(userName);
+    if (result.rows.length) {
+      return true;
+    }
+    return false;
   },
 
   createNewUser: async (json) => {

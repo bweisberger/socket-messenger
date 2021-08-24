@@ -1,10 +1,9 @@
 import { pool } from '../databaseUtils/pool';
 
 const UserAccess = {
-  getExistingUserRecords(toUser, fromUser) {
+  getExistingUserRecords() {
     const query = {
-      text: 'SELECT id, name FROM users WHERE name IN ($1, $2);',
-      values: [toUser, fromUser],
+      text: 'SELECT name FROM users;',
     }
     return pool.connect().then(client => {
       return client.query(query).then(res => {

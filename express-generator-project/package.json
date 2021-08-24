@@ -6,8 +6,8 @@
     "prestart": "babel ./src --out-dir build",
     "start": "node ./src/bin/www",
     "startdev": "nodemon --exec babel-node ./src/bin/www",
-    "createTables": "babel-node ./src/utils/runQueries",
-    "runQuery": "babel-node ./src/utils/runQuery"
+    "createTables": "babel-node ./src/databaseUtils/createTables",
+    "runQuery": "babel-node ./src/databaseUtils/runQuery"
   },
   "dependencies": {
     "@babel/cli": "^7.14.8",

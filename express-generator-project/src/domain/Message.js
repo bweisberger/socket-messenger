@@ -37,6 +37,7 @@ class Message {
     }
   };
 
+  // older implementation of getExistingUsers for the purpose of validation
   validateUsersExist = async () => {
     const users = await UserService.getExistingUsers(this.messageJson.toUser, this.messageJson.fromUser);
     if (users.length < 2 && this.messageJson.toUser !== this.messageJson.fromUser) {

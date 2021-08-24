@@ -17,7 +17,7 @@ router.post('/message', (req, res) => {
     res.status(getErrorStatus(err)).send(err.message);
     console.log('request to save message failed:', err);
   }
-})
+});
 
 router.post('/user', (req, res) => {
   console.log('received request to create new user: ', req.body);
