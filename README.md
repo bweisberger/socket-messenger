@@ -37,7 +37,7 @@ You can type into a text field and click "Send" to send a message, and this is w
 
 ## Caveats, Takeaways, Next Steps
 This was a fun project, but unfortunately proved too much for me in the given time. I had never used sockets before,
-never done as much with Vue3 (we use Vue2 at my work) and it had been years since I tried to setup a back-end. Lots of learning :)
+never done as much with Vue3 (we use Vue2 at my work) and it had been years since I tried to setup a back-end from scratch. Lots of learning :)
 
 The following are things I would like to address if I spent more time working on this project:
 - There is no testing. Anywhere. I'd like to have unit tests for my components, cypress tests for e2e functionality, and unit/integration testing for my server
@@ -46,3 +46,4 @@ The following are things I would like to address if I spent more time working on
 - It's completely unstyled
 - There's an unnecessary MessageRecord DTO - it's exactly the same as the Domain object
   - That wasn't intentional - the result of the evolution of my domain object toward the same representation in the database
+- Lots more, but that's enough for now
