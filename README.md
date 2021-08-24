@@ -41,8 +41,9 @@ never done as much with Vue3 (we use Vue2 at my work) and it had been years sinc
 
 The following are things I would like to address if I spent more time working on this project:
 - There is no testing. Anywhere. I'd like to have unit tests for my components, cypress tests for e2e functionality, and unit/integration testing for my server
+- I realized pretty late in the process that I might be able to substitute sockets entirely for REST. The result is a weird hodge-podge of disorganization where several things are handled by sockets, and a few by REST. With more time, I would clean this up further for better organization within the sockets functions especially.
 - It doesn't work
-  - Sending messages seems to be the end of the line at the moment, which is sad
+  - Sending messages seems to be the end of the line at the moment, which is sad. I think the problem may be as simple as a failure to import a component in the FE, but I had spent too much time already so I didn't try to debug that failure.
 - It's completely unstyled
 - There's an unnecessary MessageRecord DTO - it's exactly the same as the Domain object
   - That wasn't intentional - the result of the evolution of my domain object toward the same representation in the database
